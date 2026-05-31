@@ -4,6 +4,7 @@ import gm.zona_fit.modelo.Cliente;
 import gm.zona_fit.servicio.IClienteServicio;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -62,6 +63,49 @@ public class ZonaFitApplication implements CommandLineRunner {
                 }
                 else{
                     logger.info(nl + "Cliente No encontrado: " + cliente + nl);
+                }
+            }
+            case 3 -> {
+                logger.info(nl + "--- Agregar cliente ---" + nl);
+                logger.info("Nombre");
+                var nombre = consola.nextLine();
+                logger.info("Apellido");
+                var apellido = consola.nextLine();
+                logger.info("Membresia");
+                var membresia = Integer.parseInt(consola.nextLine());
+                var cliente = new Cliente();
+                cliente.setNombre(nombre);
+                cliente.setApellido(apellido);
+                cliente.setMembresia(membresia);
+                try {
+                    clienteServicio.guardarCliente(cliente);
+                    logger.info("Cliente agregado: " + cliente + nl);
+                } catch (DataIntegrityViolationException e) {
+                    if (e.getMessage() != null && e.getMessage().contains("membresia_UNIQUE")) {
+                        logger.info("No se pudo guardar: la membresia {} ya existe y no se puede repetir.", membresia);
+                    } else {
+                        throw e;
+                    }
+                }
+            }
+            case 4 ->{
+                logger.info("--- Modifcar Cliente ---" + nl);
+                logger.info(nl + "Id Cliente: ");
+                var idCliente = Integer.parseInt(consola.nextLine());
+                Cliente cliente = clienteServicio.buscarClientePorId(idCliente);
+                if(cliente !=null){
+                    logger.info("Nombre: ");
+                    var nombre = consola.nextLine();
+                    logger.info("Apellido: ");
+                    var apellido = consola.nextLine();
+                    logger.info("Membresia: ");
+                    var membresia  = Integer.parseInt(consola.nextLine());
+                    cliente.setNombre(nombre);
+                    cliente.setApellido(apellido);
+                    cliente.setMembresia(membresia);
+                    clienteServicio.guardarCliente(cliente);
+                    logger.info("Cliente modificado: " + cliente + nl);
+
                 }
             }
 
