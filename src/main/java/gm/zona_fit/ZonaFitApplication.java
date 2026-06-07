@@ -89,7 +89,7 @@ public class ZonaFitApplication implements CommandLineRunner {
                 }
             }
             case 4 ->{
-                logger.info("--- Modifcar Cliente ---" + nl);
+                logger.info("--- Modificar Cliente ---" + nl);
                 logger.info(nl + "Id Cliente: ");
                 var idCliente = Integer.parseInt(consola.nextLine());
                 Cliente cliente = clienteServicio.buscarClientePorId(idCliente);
@@ -105,11 +105,29 @@ public class ZonaFitApplication implements CommandLineRunner {
                     cliente.setMembresia(membresia);
                     clienteServicio.guardarCliente(cliente);
                     logger.info("Cliente modificado: " + cliente + nl);
-
+                }
+                else{
+                    logger.info("Cliente no encontrado" + cliente + nl);
                 }
             }
-
-
+            case 5 ->{
+                logger.info("--- Eliminar Cliente ---" + nl);
+                logger.info(nl + "Id Cliente: ");
+                //Buscamos el id del cliente por sino existe
+                var idCliente = Integer.parseInt(consola.nextLine());
+                var cliente = clienteServicio.buscarClientePorId(idCliente);
+                if(cliente == null){
+                    logger.info(nl + "Cliente no encontrado o No existe");
+                }else{
+                    clienteServicio.eliminarCliente(cliente);
+                    logger.info(nl + "Cliente eliminado: " + cliente + nl);
+                }
+            }
+            case 6 ->{
+                logger.info("Hasta pronto!" + nl + nl);
+                salir = true;
+            }
+            default ->  logger.info("Opcion NO reconocida" + opcion + nl);
         }
         return  salir;
     }
